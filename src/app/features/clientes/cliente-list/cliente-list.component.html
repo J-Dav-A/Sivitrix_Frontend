@@ -1,0 +1,51 @@
+<div class="page-header">
+  <h1>Clientes empresariales</h1>
+  <a mat-raised-button color="primary" routerLink="/clientes/nuevo">
+    <mat-icon>add</mat-icon>
+    Nuevo cliente
+  </a>
+</div>
+
+<mat-form-field appearance="outline" class="buscador">
+  <mat-label>Buscar por nombre</mat-label>
+  <input matInput #buscador (keyup.enter)="cargar(buscador.value)" placeholder="Ej. Taller Moto Express" />
+</mat-form-field>
+
+<table mat-table [dataSource]="clientes()" class="mat-elevation-z2 tabla">
+
+  <ng-container matColumnDef="nit">
+    <th mat-header-cell *matHeaderCellDef>NIT</th>
+    <td mat-cell *matCellDef="let c">{{ c.nit }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="nombre">
+    <th mat-header-cell *matHeaderCellDef>Empresa / Taller</th>
+    <td mat-cell *matCellDef="let c">{{ c.nombre }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="contacto">
+    <th mat-header-cell *matHeaderCellDef>Contacto autorizado</th>
+    <td mat-cell *matCellDef="let c">{{ c.contactoNombre }} (C.C. {{ c.contactoCedula }})</td>
+  </ng-container>
+
+  <ng-container matColumnDef="saldoCredito">
+    <th mat-header-cell *matHeaderCellDef>Saldo crédito</th>
+    <td mat-cell *matCellDef="let c">$ {{ c.saldoCredito | number: '1.2-2' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="acciones">
+    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+    <td mat-cell *matCellDef="let c">
+      <button mat-icon-button color="warn" (click)="eliminar(c)" aria-label="Eliminar">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+</table>
+
+@if (!cargando() && clientes().length === 0) {
+  <p class="vacio">No hay clientes registrados todavía.</p>
+}

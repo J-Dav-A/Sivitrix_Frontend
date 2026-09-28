@@ -1,0 +1,63 @@
+<h1>Nuevo producto</h1>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" class="formulario">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Código</mat-label>
+    <input matInput formControlName="codigo" placeholder="REP-001" />
+    @if (form.controls.codigo.invalid && form.controls.codigo.touched) {
+      <mat-error>El código es obligatorio (máx. 20 caracteres)</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="nombre" placeholder="Llanta Pirelli 90/90-18" />
+    @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
+      <mat-error>El nombre es obligatorio</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Categoría</mat-label>
+    <mat-select formControlName="categoria">
+      @for (categoria of categorias; track categoria) {
+        <mat-option [value]="categoria">{{ categoria }}</mat-option>
+      }
+    </mat-select>
+    @if (form.controls.categoria.invalid && form.controls.categoria.touched) {
+      <mat-error>Selecciona una categoría</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Precio de venta</mat-label>
+    <input matInput type="number" step="0.01" formControlName="precioVenta" />
+    @if (form.controls.precioVenta.invalid && form.controls.precioVenta.touched) {
+      <mat-error>El precio debe ser mayor a 0</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Costo de adquisición</mat-label>
+    <input matInput type="number" step="0.01" formControlName="costoAdquisicion" />
+    @if (form.controls.costoAdquisicion.invalid && form.controls.costoAdquisicion.touched) {
+      <mat-error>El costo debe ser mayor a 0</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Stock mínimo</mat-label>
+    <input matInput type="number" formControlName="stockMinimo" />
+    @if (form.controls.stockMinimo.invalid && form.controls.stockMinimo.touched) {
+      <mat-error>El stock mínimo no puede ser negativo</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="acciones">
+    <a mat-button routerLink="/productos">Cancelar</a>
+    <button mat-raised-button color="primary" type="submit" [disabled]="enviando.value">
+      Guardar
+    </button>
+  </div>
+</form>

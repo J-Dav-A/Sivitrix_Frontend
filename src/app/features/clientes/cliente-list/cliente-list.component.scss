@@ -1,0 +1,27 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.buscador {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1rem;
+}
+
+.tabla {
+  width: 100%;
+}
+
+.chip-alerta {
+  background-color: #ffcdd2 !important;
+  color: #b71c1c !important;
+}
+
+.vacio {
+  margin-top: 1rem;
+  color: #666;
+  text-align: center;
+}

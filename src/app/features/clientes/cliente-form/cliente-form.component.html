@@ -1,0 +1,69 @@
+<h1>Nuevo cliente empresarial</h1>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" class="formulario">
+
+  <mat-form-field appearance="outline">
+    <mat-label>NIT</mat-label>
+    <input matInput formControlName="nit" placeholder="900123456-7" />
+    @if (form.controls.nit.invalid && form.controls.nit.touched) {
+      <mat-error>NIT inválido (formato: 900123456 o 900123456-7)</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre de la empresa / taller</mat-label>
+    <input matInput formControlName="nombre" placeholder="Taller Moto Express SAS" />
+    @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
+      <mat-error>El nombre es obligatorio</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Teléfono</mat-label>
+    <input matInput formControlName="telefono" placeholder="3112345678" />
+    @if (form.controls.telefono.invalid && form.controls.telefono.touched) {
+      <mat-error>Teléfono inválido (solo dígitos)</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Dirección</mat-label>
+    <input matInput formControlName="direccion" placeholder="Cra 15 #12N-30, Armenia" />
+    @if (form.controls.direccion.invalid && form.controls.direccion.touched) {
+      <mat-error>La dirección es obligatoria</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Correo electrónico</mat-label>
+    <input matInput type="email" formControlName="email" placeholder="contacto@taller.com" />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+      <mat-error>Correo electrónico inválido</mat-error>
+    }
+  </mat-form-field>
+
+  <h3>Persona de contacto autorizada</h3>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre del contacto</mat-label>
+    <input matInput formControlName="contactoNombre" placeholder="Carlos Herrera" />
+    @if (form.controls.contactoNombre.invalid && form.controls.contactoNombre.touched) {
+      <mat-error>El nombre del contacto es obligatorio</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Cédula del contacto</mat-label>
+    <input matInput formControlName="contactoCedula" placeholder="1094567890" />
+    @if (form.controls.contactoCedula.invalid && form.controls.contactoCedula.touched) {
+      <mat-error>Cédula inválida (solo dígitos)</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="acciones">
+    <a mat-button routerLink="/clientes">Cancelar</a>
+    <button mat-raised-button color="primary" type="submit" [disabled]="enviando.value">
+      Guardar
+    </button>
+  </div>
+</form>
