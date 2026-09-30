@@ -17,6 +17,13 @@ export const routes: Routes = [
         (m) => m.ProductoFormComponent,
       ),
   },
+  {
+    path: 'productos/editar/:id',
+    loadComponent: () =>
+      import('./features/productos/producto-form/producto-form.component').then(
+        (m) => m.ProductoFormComponent,
+      ),
+  },
 
   {
     path: 'clientes',
@@ -27,6 +34,13 @@ export const routes: Routes = [
   },
   {
     path: 'clientes/nuevo',
+    loadComponent: () =>
+      import('./features/clientes/cliente-form/cliente-form.component').then(
+        (m) => m.ClienteFormComponent,
+      ),
+  },
+  {
+    path: 'clientes/editar/:id',
     loadComponent: () =>
       import('./features/clientes/cliente-form/cliente-form.component').then(
         (m) => m.ClienteFormComponent,

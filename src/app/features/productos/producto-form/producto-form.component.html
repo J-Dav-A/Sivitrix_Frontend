@@ -1,4 +1,4 @@
-<h1>Nuevo producto</h1>
+<h1>{{ esEdicion ? 'Editar producto' : 'Nuevo producto' }}</h1>
 
 <form [formGroup]="form" (ngSubmit)="guardar()" class="formulario">
 
@@ -8,7 +8,10 @@
     @if (form.controls.codigo.invalid && form.controls.codigo.touched) {
       <mat-error>El código es obligatorio (máx. 20 caracteres)</mat-error>
     }
-  </mat-form-field>
+    @if (form.controls.codigo.hasError('duplicado')) {
+      <mat-error>Ya existe un producto con este código</mat-error>
+    }
+</mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Nombre</mat-label>
@@ -56,8 +59,8 @@
 
   <div class="acciones">
     <a mat-button routerLink="/productos">Cancelar</a>
-    <button mat-raised-button color="primary" type="submit" [disabled]="enviando.value">
-      Guardar
+        <button mat-raised-button color="primary" type="submit" [disabled]="enviando()">
+      {{ esEdicion ? 'Actualizar' : 'Guardar' }}
     </button>
   </div>
 </form>

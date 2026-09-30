@@ -1,4 +1,4 @@
-<h1>Nuevo cliente empresarial</h1>
+<h1>{{ esEdicion ? 'Editar cliente empresarial' : 'Nuevo cliente empresarial' }}</h1>
 
 <form [formGroup]="form" (ngSubmit)="guardar()" class="formulario">
 
@@ -7,6 +7,9 @@
     <input matInput formControlName="nit" placeholder="900123456-7" />
     @if (form.controls.nit.invalid && form.controls.nit.touched) {
       <mat-error>NIT inválido (formato: 900123456 o 900123456-7)</mat-error>
+    }
+        @if (form.controls.nit.hasError('duplicado')) {
+      <mat-error>Ya existe un cliente con este NIT</mat-error>
     }
   </mat-form-field>
 
@@ -62,8 +65,8 @@
 
   <div class="acciones">
     <a mat-button routerLink="/clientes">Cancelar</a>
-    <button mat-raised-button color="primary" type="submit" [disabled]="enviando.value">
-      Guardar
+        <button mat-raised-button color="primary" type="submit" [disabled]="enviando()">
+      {{ esEdicion ? 'Actualizar' : 'Guardar' }}
     </button>
   </div>
 </form>

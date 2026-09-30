@@ -1,24 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClienteService } from '../services/cliente.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-cliente-form',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './cliente-form.component.html',
   styleUrl: './cliente-form.component.scss',
 })
@@ -26,11 +20,14 @@ export class ClienteFormComponent {
   private readonly fb = inject(FormBuilder);
   private readonly clienteService = inject(ClienteService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
 
-  readonly enviando = { value: false };
+  readonly enviando = signal(false);
 
-  // SWR-35/SWR-36: mismas reglas de formato que el backend (NIT, cedula, etc.)
+  private readonly clienteId = this.route.snapshot.paramMap.get('id');
+  readonly esEdicion = !!this.clienteId;
+
   readonly form = this.fb.nonNullable.group({
     nit: ['', [Validators.required, Validators.pattern(/^\d{7,15}(-\d)?$/)]],
     nombre: ['', [Validators.required, Validators.maxLength(150)]],
@@ -41,21 +38,51 @@ export class ClienteFormComponent {
     contactoCedula: ['', [Validators.required, Validators.pattern(/^\d{6,12}$/)]],
   });
 
-  guardar(): void {
+  constructor() {
+    if (this.esEdicion) {
+      this.form.controls.nit.disable();
+      this.cargarCliente(Number(this.clienteId));
+    }
+  }
+
+  private cargarCliente(id: number): void {
+    this.clienteService.obtener(id).subscribe((cliente) => {
+      this.form.patchValue({
+        nit: cliente.nit,
+        nombre: cliente.nombre,
+        telefono: cliente.telefono,
+        direccion: cliente.direccion,
+        email: cliente.email,
+        contactoNombre: cliente.contactoNombre,
+        contactoCedula: cliente.contactoCedula,
+      });
+    });
+  }
+
+    guardar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.enviando.value = true;
+    this.enviando.set(true);
+    const request = this.form.getRawValue();
 
-    this.clienteService.crear(this.form.getRawValue()).subscribe({
+    const operacion = this.esEdicion
+      ? this.clienteService.actualizar(Number(this.clienteId), request)
+      : this.clienteService.crear(request);
+
+    operacion.subscribe({
       next: () => {
-        this.snackBar.open('Cliente registrado correctamente', 'Cerrar', { duration: 3000 });
+        const mensaje = this.esEdicion ? 'Cliente actualizado correctamente' : 'Cliente registrado correctamente';
+        this.snackBar.open(mensaje, 'Cerrar', { duration: 3000 });
         this.router.navigate(['/clientes']);
       },
-      error: () => {
-        this.enviando.value = false;
+      error: (error: HttpErrorResponse) => {
+        this.enviando.set(false);
+        if (error.status === 409) {
+          this.form.controls.nit.setErrors({ duplicado: true });
+        }
       },
     });
   }

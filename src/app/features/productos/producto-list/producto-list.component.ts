@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProductoService } from '../services/producto.service';
 import { ProductoResponse } from '../models/producto.model';
 
@@ -17,6 +20,7 @@ import { ProductoResponse } from '../models/producto.model';
   imports: [
     CommonModule,
     RouterLink,
+    ReactiveFormsModule,
     MatTableModule,
     MatButtonModule,
     MatIconModule,
@@ -33,19 +37,14 @@ export class ProductoListComponent implements OnInit {
 
   readonly productos = signal<ProductoResponse[]>([]);
   readonly cargando = signal(false);
+  readonly busqueda = new FormControl('', { nonNullable: true });
 
-  readonly columnas = [
-    'codigo',
-    'nombre',
-    'categoria',
-    'precioVenta',
-    'margenPorcentaje',
-    'stock',
-    'acciones',
-  ];
+  readonly columnas = ['codigo', 'nombre', 'categoria', 'precioVenta', 'margenPorcentaje', 'stock', 'acciones'];
 
   ngOnInit(): void {
-    this.cargar();
+    this.busqueda.valueChanges
+      .pipe(startWith(''), debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
+      .subscribe((nombre) => this.cargar(nombre));
   }
 
   cargar(nombre?: string): void {
@@ -65,11 +64,10 @@ export class ProductoListComponent implements OnInit {
     }
     this.productoService.eliminar(producto.id).subscribe(() => {
       this.snackBar.open('Producto eliminado', 'Cerrar', { duration: 3000 });
-      this.cargar();
+      this.cargar(this.busqueda.value);
     });
   }
 
-  // SWR-11: resalta visualmente los productos por debajo del stock minimo.
   bajoStock(producto: ProductoResponse): boolean {
     return producto.diferenciaConMinimo <= 0;
   }
