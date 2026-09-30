@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -29,7 +29,7 @@ import { ClienteResponse } from '../models/cliente.model';
   templateUrl: './cliente-list.component.html',
   styleUrl: './cliente-list.component.scss',
 })
-export class ClienteListComponent implements OnInit {
+export class ClienteListComponent {
   private readonly clienteService = inject(ClienteService);
   private readonly snackBar = inject(MatSnackBar);
 
@@ -39,7 +39,9 @@ export class ClienteListComponent implements OnInit {
 
   readonly columnas = ['nit', 'nombre', 'contacto', 'saldoCredito', 'acciones'];
 
-  ngOnInit(): void {
+  // takeUntilDestroyed() solo funciona dentro del constructor (o un campo
+  // inicializado directamente), por eso esta lógica ya NO va en ngOnInit.
+  constructor() {
     this.busqueda.valueChanges
       .pipe(startWith(''), debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe((q) => this.cargar(q));

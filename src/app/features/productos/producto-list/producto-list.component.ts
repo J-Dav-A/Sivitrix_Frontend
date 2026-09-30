@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -31,7 +31,7 @@ import { ProductoResponse } from '../models/producto.model';
   templateUrl: './producto-list.component.html',
   styleUrl: './producto-list.component.scss',
 })
-export class ProductoListComponent implements OnInit {
+export class ProductoListComponent {
   private readonly productoService = inject(ProductoService);
   private readonly snackBar = inject(MatSnackBar);
 
@@ -41,15 +41,17 @@ export class ProductoListComponent implements OnInit {
 
   readonly columnas = ['codigo', 'nombre', 'categoria', 'precioVenta', 'margenPorcentaje', 'stock', 'acciones'];
 
-  ngOnInit(): void {
+  // takeUntilDestroyed() solo funciona dentro del constructor (o un campo
+  // inicializado directamente) - por eso esta logica ya NO va en ngOnInit.
+  constructor() {
     this.busqueda.valueChanges
       .pipe(startWith(''), debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
-      .subscribe((nombre) => this.cargar(nombre));
+      .subscribe((q) => this.cargar(q));
   }
 
-  cargar(nombre?: string): void {
+  cargar(q?: string): void {
     this.cargando.set(true);
-    this.productoService.listar({ nombre }).subscribe({
+    this.productoService.listar({ nombre: q }).subscribe({
       next: (productos) => {
         this.productos.set(productos);
         this.cargando.set(false);
