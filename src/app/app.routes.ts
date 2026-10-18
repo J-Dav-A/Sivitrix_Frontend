@@ -134,5 +134,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/reportes/reportes.component').then((m) => m.ReportesComponent),
   },
 
+    {
+    path: 'usuarios',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./features/usuarios/usuarios.component').then((m) => m.UsuariosComponent),
+  },
+
   { path: '**', redirectTo: 'productos' },
 ];
