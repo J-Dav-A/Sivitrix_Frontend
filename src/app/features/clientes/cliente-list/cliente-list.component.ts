@@ -37,7 +37,7 @@ export class ClienteListComponent {
   readonly cargando = signal(false);
   readonly busqueda = new FormControl('', { nonNullable: true });
 
-  readonly columnas = ['nit', 'nombre', 'contacto', 'saldoCredito', 'acciones'];
+  readonly columnas = ['nit', 'nombre', 'contacto', 'saldoCredito', 'cupo', 'acciones'];
 
   // takeUntilDestroyed() solo funciona dentro del constructor (o un campo
   // inicializado directamente), por eso esta lógica ya NO va en ngOnInit.

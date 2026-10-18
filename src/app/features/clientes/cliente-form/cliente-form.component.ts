@@ -36,6 +36,7 @@ export class ClienteFormComponent {
     email: ['', [Validators.required, Validators.email]],
     contactoNombre: ['', [Validators.required, Validators.maxLength(150)]],
     contactoCedula: ['', [Validators.required, Validators.pattern(/^\d{6,12}$/)]],
+    limiteCredito: [0, [Validators.required, Validators.min(0)]],
   });
 
   constructor() {
@@ -55,6 +56,7 @@ export class ClienteFormComponent {
         email: cliente.email,
         contactoNombre: cliente.contactoNombre,
         contactoCedula: cliente.contactoCedula,
+        limiteCredito: cliente.limiteCredito,
       });
     });
   }

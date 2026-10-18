@@ -1,8 +1,28 @@
 <mat-toolbar color="primary">
   <span class="brand">SIVITRIX</span>
-  <span class="spacer"></span>
-  <a mat-button routerLink="/productos" routerLinkActive="activo">Productos</a>
+
+  <button mat-button [matMenuTriggerFor]="menuInventario">Inventario <mat-icon iconPositionEnd>arrow_drop_down</mat-icon></button>
+  <mat-menu #menuInventario="matMenu">
+    <a mat-menu-item routerLink="/productos">Productos</a>
+    <a mat-menu-item routerLink="/inventario/movimientos">Movimientos</a>
+    <a mat-menu-item routerLink="/alertas">Alertas de stock</a>
+  </mat-menu>
+
+  <button mat-button [matMenuTriggerFor]="menuCompras">Compras <mat-icon iconPositionEnd>arrow_drop_down</mat-icon></button>
+  <mat-menu #menuCompras="matMenu">
+    <a mat-menu-item routerLink="/proveedores">Proveedores</a>
+    <a mat-menu-item routerLink="/pedidos">Pedidos</a>
+  </mat-menu>
+
+  <button mat-button [matMenuTriggerFor]="menuVentas">Ventas <mat-icon iconPositionEnd>arrow_drop_down</mat-icon></button>
+  <mat-menu #menuVentas="matMenu">
+    <a mat-menu-item routerLink="/ventas">Ventas</a>
+    <a mat-menu-item routerLink="/facturas">Facturas</a>
+    <a mat-menu-item routerLink="/creditos">Créditos</a>
+  </mat-menu>
+
   <a mat-button routerLink="/clientes" routerLinkActive="activo">Clientes</a>
+  <a mat-button routerLink="/reportes" routerLinkActive="activo">Reportes</a>
 </mat-toolbar>
 
 <main class="contenido">

@@ -7,6 +7,7 @@ export interface ClienteRequest {
   email: string;
   contactoNombre: string;
   contactoCedula: string;
+  limiteCredito: number;
 }
 
 // SWR-37: incluye el saldo de crédito acumulado.
@@ -20,6 +21,8 @@ export interface ClienteResponse {
   contactoNombre: string;
   contactoCedula: string;
   saldoCredito: number;
+  limiteCredito: number;
+  cupoDisponible: number;
   creadoEn: string;
   actualizadoEn: string;
 }

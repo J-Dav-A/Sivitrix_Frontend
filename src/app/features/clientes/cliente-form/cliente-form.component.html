@@ -4,9 +4,9 @@
 
   <mat-form-field appearance="outline">
     <mat-label>NIT</mat-label>
-    <input matInput formControlName="nit" placeholder="900123456-7" />
+    <input matInput formControlName="nit" placeholder="900123456-8" />
     @if (form.controls.nit.invalid && form.controls.nit.touched) {
-      <mat-error>NIT inválido (formato: 900123456 o 900123456-7)</mat-error>
+      <mat-error>NIT inválido (formato: 900123456 o 900123456-8)</mat-error>
     }
         @if (form.controls.nit.hasError('duplicado')) {
       <mat-error>Ya existe un cliente con este NIT</mat-error>
@@ -60,6 +60,17 @@
     <input matInput formControlName="contactoCedula" placeholder="1094567890" />
     @if (form.controls.contactoCedula.invalid && form.controls.contactoCedula.touched) {
       <mat-error>Cédula inválida (solo dígitos)</mat-error>
+    }
+  </mat-form-field>
+
+  <h3>Crédito</h3>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Cupo máximo de crédito</mat-label>
+    <input matInput type="number" min="0" formControlName="limiteCredito" placeholder="5000000" />
+    <mat-hint>Valor máximo que el cliente puede adeudar a la vez (0 = sin crédito)</mat-hint>
+    @if (form.controls.limiteCredito.invalid && form.controls.limiteCredito.touched) {
+      <mat-error>El cupo no puede ser negativo</mat-error>
     }
   </mat-form-field>
 
