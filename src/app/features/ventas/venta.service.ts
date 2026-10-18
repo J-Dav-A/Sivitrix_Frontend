@@ -21,6 +21,10 @@ export class VentaService {
     return this.http.post<VentaResponse>(this.baseUrl, request);
   }
 
+  cancelar(id: number, motivo: string): Observable<VentaResponse> {
+    return this.http.post<VentaResponse>(`${this.baseUrl}/${id}/cancelar`, { motivo });
+  }
+
   facturas(): Observable<FacturaResponse[]> {
     return this.http.get<FacturaResponse[]>(`${environment.apiBaseUrl}/facturas`);
   }

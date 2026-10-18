@@ -13,6 +13,7 @@ import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProductoService } from '../services/producto.service';
 import { ProductoResponse } from '../models/producto.model';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-producto-list',
@@ -34,13 +35,15 @@ import { ProductoResponse } from '../models/producto.model';
 export class ProductoListComponent {
   private readonly productoService = inject(ProductoService);
   private readonly snackBar = inject(MatSnackBar);
-
+  readonly auth = inject(AuthService);
   readonly productos = signal<ProductoResponse[]>([]);
   readonly cargando = signal(false);
   readonly busqueda = new FormControl('', { nonNullable: true });
 
-  readonly columnas = ['codigo', 'nombre', 'categoria', 'precioVenta', 'margenPorcentaje', 'stock', 'acciones'];
-
+  readonly columnas = this.auth.esAdmin()
+    ? ['codigo', 'nombre', 'categoria', 'precioVenta', 'margenPorcentaje', 'stock', 'acciones']
+    : ['codigo', 'nombre', 'categoria', 'precioVenta', 'stock'];
+    
   // takeUntilDestroyed() solo funciona dentro del constructor (o un campo
   // inicializado directamente) - por eso esta logica ya NO va en ngOnInit.
   constructor() {

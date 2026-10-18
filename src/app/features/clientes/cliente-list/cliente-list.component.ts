@@ -12,6 +12,7 @@ import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ClienteService } from '../services/cliente.service';
 import { ClienteResponse } from '../models/cliente.model';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-cliente-list',
@@ -32,6 +33,7 @@ import { ClienteResponse } from '../models/cliente.model';
 export class ClienteListComponent {
   private readonly clienteService = inject(ClienteService);
   private readonly snackBar = inject(MatSnackBar);
+  readonly auth = inject(AuthService);
 
   readonly clientes = signal<ClienteResponse[]>([]);
   readonly cargando = signal(false);

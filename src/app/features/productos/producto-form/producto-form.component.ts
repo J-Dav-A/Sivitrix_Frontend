@@ -63,7 +63,7 @@ export class ProductoFormComponent {
         nombre: producto.nombre,
         categoria: producto.categoria,
         precioVenta: producto.precioVenta,
-        costoAdquisicion: producto.costoAdquisicion,
+        costoAdquisicion: producto.costoAdquisicion ?? 0,
         stockMinimo: producto.stockMinimo,
       });
     });

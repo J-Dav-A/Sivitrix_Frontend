@@ -44,4 +44,5 @@ export interface FacturaResponse {
   subtotal: number;
   iva: number;
   total: number;
+  anulada: boolean;
 }

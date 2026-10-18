@@ -22,6 +22,7 @@ import { CreditoResponse, EstadoCredito } from './credito.model';
           <mat-option value="PENDIENTE_AUTORIZACION">Pendientes de autorización</mat-option>
           <mat-option value="APROBADO">Aprobados</mat-option>
           <mat-option value="PAGADO">Pagados</mat-option>
+          <mat-option value="CANCELADO">Cancelados</mat-option>
           <mat-option value="RECHAZADO">Rechazados</mat-option>
         </mat-select>
       </mat-form-field>
@@ -47,7 +48,7 @@ import { CreditoResponse, EstadoCredito } from './credito.model';
       <ng-container matColumnDef="estado">
         <th mat-header-cell *matHeaderCellDef>Estado</th>
         <td mat-cell *matCellDef="let c">
-          <span class="estado" [class.ok]="c.estado === 'APROBADO' || c.estado === 'PAGADO'" [class.espera]="c.estado === 'PENDIENTE_AUTORIZACION'" [class.mal]="c.estado === 'RECHAZADO'">
+          <span class="estado" [class.ok]="c.estado === 'APROBADO' || c.estado === 'PAGADO'" [class.espera]="c.estado === 'PENDIENTE_AUTORIZACION'" [class.mal]="c.estado === 'RECHAZADO' || c.estado === 'CANCELADO'">
             {{ etiqueta(c.estado) }}
           </span>
         </td>
@@ -100,6 +101,7 @@ export class CreditoListComponent {
       APROBADO: 'Aprobado',
       RECHAZADO: 'Rechazado',
       PAGADO: 'Pagado',
+      CANCELADO: 'Cancelado',
     };
     return n[estado] ?? estado;
   }

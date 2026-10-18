@@ -1,9 +1,11 @@
 <div class="page-header">
   <h1>Inventario de repuestos</h1>
-  <a mat-raised-button color="primary" routerLink="/productos/nuevo">
-    <mat-icon>add</mat-icon>
-    Nuevo producto
-  </a>
+  @if (auth.esAdmin()) {
+    <a mat-raised-button color="primary" routerLink="/productos/nuevo">
+      <mat-icon>add</mat-icon>
+      Nuevo producto
+    </a>
+  }
 </div>
 
 <mat-form-field appearance="outline" class="buscador">

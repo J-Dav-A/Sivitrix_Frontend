@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { VentaService } from './venta.service';
 import { VentaResponse } from './venta.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-venta-list',
@@ -52,6 +54,9 @@ import { VentaResponse } from './venta.model';
           @if (v.facturaId) {
             <a mat-button color="primary" [routerLink]="['/facturas', v.facturaId]">Factura</a>
           }
+          @if (auth.esAdmin() && v.estado === 'CONFIRMADA') {
+            <button mat-button color="warn" (click)="cancelar(v)">Cancelar</button>
+          }
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="columnas"></tr>
@@ -74,11 +79,24 @@ import { VentaResponse } from './venta.model';
 })
 export class VentaListComponent {
   private readonly service = inject(VentaService);
+  private readonly snackBar = inject(MatSnackBar);
+  readonly auth = inject(AuthService);
   readonly ventas = signal<VentaResponse[]>([]);
   readonly columnas = ['numero', 'fecha', 'cliente', 'pago', 'total', 'estado', 'acciones'];
 
   constructor() {
     this.service.listar().subscribe((l) => this.ventas.set(l));
+  }
+
+    cancelar(venta: VentaResponse): void {
+    const motivo = prompt(`Motivo para cancelar la venta ${venta.numero} (opcional):`);
+    if (motivo === null) {
+      return;
+    }
+    this.service.cancelar(venta.id, motivo).subscribe(() => {
+      this.snackBar.open(`Venta ${venta.numero} cancelada y stock devuelto`, 'Cerrar', { duration: 4000 });
+      this.service.listar().subscribe((l) => this.ventas.set(l));
+    });
   }
 
   etiqueta(estado: string): string {

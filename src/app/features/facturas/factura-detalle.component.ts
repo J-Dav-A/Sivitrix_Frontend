@@ -17,6 +17,9 @@ import { FacturaResponse } from '../ventas/venta.model';
       </div>
 
       <article class="factura mat-elevation-z3">
+        @if (f.anulada) {
+          <p class="anulada">FACTURA ANULADA — la venta fue cancelada</p>
+        }
         <header>
           <div>
             <h2>Vitrix — Repuestos para motocicleta</h2>
@@ -62,6 +65,7 @@ import { FacturaResponse } from '../ventas/venta.model';
     }
   `,
   styles: [`
+    .anulada { color: #b71c1c; border: 2px solid #b71c1c; text-align: center; font-weight: 700; padding: 0.5rem; margin: 0 0 1rem; }
     .acciones { display: flex; justify-content: space-between; margin-bottom: 1rem; }
     .factura { background: white; padding: 2rem; max-width: 800px; margin: 0 auto; }
     header { display: flex; justify-content: space-between; border-bottom: 2px solid #1565c0; padding-bottom: 1rem; }

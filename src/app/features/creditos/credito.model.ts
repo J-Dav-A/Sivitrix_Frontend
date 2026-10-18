@@ -1,4 +1,4 @@
-export type EstadoCredito = 'PENDIENTE_AUTORIZACION' | 'APROBADO' | 'RECHAZADO' | 'PAGADO';
+export type EstadoCredito = 'PENDIENTE_AUTORIZACION' | 'APROBADO' | 'RECHAZADO' | 'PAGADO' | 'CANCELADO';
 export type EstadoCuota = 'PENDIENTE' | 'PAGADA' | 'VENCIDA';
 
 export interface CuotaResponse {

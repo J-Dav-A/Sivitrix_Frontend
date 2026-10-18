@@ -38,9 +38,9 @@ export interface ProductoResponse {
   nombre: string;
   categoria: CategoriaProducto;
   precioVenta: number;
-  costoAdquisicion: number;
-  margenValor: number;
-  margenPorcentaje: number;
+  costoAdquisicion: number | null;
+  margenValor: number | null;
+  margenPorcentaje: number | null;
   stockActual: number;
   stockMinimo: number;
   diferenciaConMinimo: number;
