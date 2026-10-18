@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ClienteCompra, ProductoVendido, ReporteInventario, ReporteVentas } from './reporte.model';
 
@@ -20,8 +22,11 @@ function fechaIso(d: Date): string {
   imports: [CommonModule, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   template: `
     <h1>Reportes</h1>
+    @if (ventas(); as r) {
+      <p class="solo-impresion">Vitrix — Repuestos para motocicleta · Generado el {{ ahora | date: 'dd/MM/yyyy HH:mm' }}</p>
+    }
 
-    <div class="filtros">
+    <div class="filtros no-imprimir">
       <mat-form-field appearance="outline">
         <mat-label>Desde</mat-label>
         <input matInput type="date" [(ngModel)]="desde" />
@@ -30,7 +35,10 @@ function fechaIso(d: Date): string {
         <mat-label>Hasta</mat-label>
         <input matInput type="date" [(ngModel)]="hasta" />
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="cargar()">Generar</button>
+      <button mat-raised-button color="primary" (click)="cargar(true)" [disabled]="cargando()">
+        {{ cargando() ? 'Generando...' : 'Generar' }}
+      </button>
+      <button mat-stroked-button (click)="imprimir()" [disabled]="!ventas()">Imprimir / Guardar PDF</button>
     </div>
 
     @if (inventario(); as inv) {
@@ -120,10 +128,15 @@ function fechaIso(d: Date): string {
     th, td { padding: 0.5rem 0.7rem; text-align: left; border-bottom: 1px solid #eee; }
     .num { text-align: right; }
     .vacio { color: #666; text-align: center; }
+    .solo-impresion { display: none; color: #555; }
+    @media print { .solo-impresion { display: block; } .tarjeta { break-inside: avoid; } }
   `],
 })
 export class ReportesComponent {
   private readonly http = inject(HttpClient);
+  private readonly snackBar = inject(MatSnackBar);
+  readonly cargando = signal(false);
+  ahora = new Date();
   private readonly base = `${environment.apiBaseUrl}/reportes`;
 
   desde = fechaIso(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -144,11 +157,32 @@ export class ReportesComponent {
     return (total / this.maximo()) * 100;
   }
 
-  cargar(): void {
+  cargar(avisar = false): void {
     const params = new HttpParams().set('desde', this.desde).set('hasta', this.hasta);
-    this.http.get<ReporteVentas>(`${this.base}/ventas`, { params }).subscribe((r) => this.ventas.set(r));
-    this.http.get<ProductoVendido[]>(`${this.base}/productos-mas-vendidos`, { params }).subscribe((r) => this.productos.set(r));
-    this.http.get<ClienteCompra[]>(`${this.base}/mejores-clientes`, { params }).subscribe((r) => this.clientes.set(r));
-    this.http.get<ReporteInventario>(`${this.base}/inventario`).subscribe((r) => this.inventario.set(r));
+    this.cargando.set(true);
+    forkJoin({
+      ventas: this.http.get<ReporteVentas>(`${this.base}/ventas`, { params }),
+      productos: this.http.get<ProductoVendido[]>(`${this.base}/productos-mas-vendidos`, { params }),
+      clientes: this.http.get<ClienteCompra[]>(`${this.base}/mejores-clientes`, { params }),
+      inventario: this.http.get<ReporteInventario>(`${this.base}/inventario`),
+    }).subscribe({
+      next: (r) => {
+        this.ventas.set(r.ventas);
+        this.productos.set(r.productos);
+        this.clientes.set(r.clientes);
+        this.inventario.set(r.inventario);
+        this.ahora = new Date();
+        this.cargando.set(false);
+        if (avisar) {
+          this.snackBar.open(`Reporte generado: ${r.ventas.cantidadVentas} venta(s) en el rango`, 'Cerrar', { duration: 3000 });
+        }
+      },
+      // El errorInterceptor ya muestra el mensaje; aqui solo se libera el boton.
+      error: () => this.cargando.set(false),
+    });
+  }
+
+  imprimir(): void {
+    window.print();
   }
 }
