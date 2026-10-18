@@ -1,4 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Al imprimir o guardar como PDF solo debe salir el documento, sin la barra de navegacion. */
+@media print {
+  mat-toolbar,
+  .no-imprimir,
+  .mat-mdc-snack-bar-container { display: none !important; }
+  body { background: white !important; }
+  .contenido { max-width: none !important; margin: 0 !important; padding: 0 !important; }
+}
