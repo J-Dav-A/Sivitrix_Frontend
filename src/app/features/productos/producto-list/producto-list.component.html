@@ -14,6 +14,26 @@
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 
+<mat-form-field appearance="outline" class="filtro">
+  <mat-label>Categoría</mat-label>
+  <mat-select [formControl]="categoria">
+    <mat-option value="">Todas</mat-option>
+    @for (c of categorias; track c) {
+      <mat-option [value]="c">{{ c }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="filtro">
+  <mat-label>Estado del stock</mat-label>
+  <mat-select [formControl]="estadoStock">
+    <mat-option value="">Todos</mat-option>
+    @for (e of estados; track e.valor) {
+      <mat-option [value]="e.valor">{{ e.texto }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
 <table mat-table [dataSource]="productos()" class="mat-elevation-z2 tabla">
 
   <ng-container matColumnDef="codigo">

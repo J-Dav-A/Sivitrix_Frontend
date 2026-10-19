@@ -2,20 +2,23 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { CategoriaProducto, ProductoRequest, ProductoResponse } from '../models/producto.model';
+import { CategoriaProducto, EstadoStock, ProductoRequest, ProductoResponse } from '../models/producto.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductoService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiBaseUrl}/productos`;
 
-  listar(filtros?: { nombre?: string; categoria?: CategoriaProducto }): Observable<ProductoResponse[]> {
+  listar(filtros?: { nombre?: string; categoria?: CategoriaProducto; estadoStock?: EstadoStock }): Observable<ProductoResponse[]> {
     let params = new HttpParams();
     if (filtros?.nombre) {
       params = params.set('nombre', filtros.nombre);
     }
     if (filtros?.categoria) {
       params = params.set('categoria', filtros.categoria);
+    }
+    if (filtros?.estadoStock) {
+      params = params.set('estadoStock', filtros.estadoStock);
     }
     return this.http.get<ProductoResponse[]>(this.baseUrl, { params });
   }

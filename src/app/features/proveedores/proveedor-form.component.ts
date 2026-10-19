@@ -24,7 +24,7 @@ import { ProveedorService } from './proveedor.service';
         <mat-label>NIT</mat-label>
         <input matInput formControlName="nit" placeholder="900123456-8" />
         @if (form.controls.nit.hasError('pattern') && form.controls.nit.touched) {
-          <mat-error>NIT inválido (formato: 900123456 o 900123456-8)</mat-error>
+          <mat-error>NIT inválido: incluye el dígito de verificación (ej. 900123456-8)</mat-error>
         }
         @if (form.controls.nit.hasError('duplicado')) {
           <mat-error>Ya existe un proveedor con este NIT</mat-error>
@@ -100,7 +100,7 @@ export class ProveedorFormComponent {
   readonly esEdicion = !!this.proveedorId;
 
   readonly form = this.fb.nonNullable.group({
-    nit: ['', [Validators.required, Validators.pattern(/^\d{7,15}(-\d)?$/)]],
+    nit: ['', [Validators.required, Validators.pattern(/^\d{7,15}-\d$/)]],
     nombreEmpresa: ['', [Validators.required, Validators.maxLength(150)]],
     nombreContacto: ['', [Validators.required, Validators.maxLength(150)]],
     telefono: ['', [Validators.required, Validators.pattern(/^\d{7,15}$/)]],

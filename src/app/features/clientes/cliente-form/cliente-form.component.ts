@@ -29,7 +29,7 @@ export class ClienteFormComponent {
   readonly esEdicion = !!this.clienteId;
 
   readonly form = this.fb.nonNullable.group({
-    nit: ['', [Validators.required, Validators.pattern(/^\d{7,15}(-\d)?$/)]],
+    nit: ['', [Validators.required, Validators.pattern(/^\d{7,15}-\d$/)]],
     nombre: ['', [Validators.required, Validators.maxLength(150)]],
     telefono: ['', [Validators.required, Validators.pattern(/^\d{7,15}$/)]],
     direccion: ['', [Validators.required, Validators.maxLength(200)]],
@@ -61,7 +61,7 @@ export class ClienteFormComponent {
     });
   }
 
-    guardar(): void {
+  guardar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

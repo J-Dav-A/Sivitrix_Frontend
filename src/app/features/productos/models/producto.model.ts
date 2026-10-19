@@ -1,3 +1,5 @@
+export type EstadoStock = 'NORMAL' | 'BAJO_STOCK' | 'CRITICO';
+
 export type CategoriaProducto =
   | 'LLANTAS'
   | 'BATERIAS'

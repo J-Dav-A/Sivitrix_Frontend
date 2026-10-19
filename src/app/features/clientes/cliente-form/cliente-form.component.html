@@ -6,9 +6,9 @@
     <mat-label>NIT</mat-label>
     <input matInput formControlName="nit" placeholder="900123456-8" />
     @if (form.controls.nit.invalid && form.controls.nit.touched) {
-      <mat-error>NIT inválido (formato: 900123456 o 900123456-8)</mat-error>
+      <mat-error>NIT inválido: incluye el dígito de verificación (ej. 900123456-8)</mat-error>
     }
-        @if (form.controls.nit.hasError('duplicado')) {
+    @if (form.controls.nit.hasError('duplicado')) {
       <mat-error>Ya existe un cliente con este NIT</mat-error>
     }
   </mat-form-field>
@@ -76,7 +76,7 @@
 
   <div class="acciones">
     <a mat-button routerLink="/clientes">Cancelar</a>
-        <button mat-raised-button color="primary" type="submit" [disabled]="enviando()">
+    <button mat-raised-button color="primary" type="submit" [disabled]="enviando()">
       {{ esEdicion ? 'Actualizar' : 'Guardar' }}
     </button>
   </div>
